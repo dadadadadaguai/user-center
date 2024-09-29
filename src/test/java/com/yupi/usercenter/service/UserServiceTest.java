@@ -30,4 +30,13 @@ class UserServiceTest {
     log.info("save user success, userId: " + user.getId());
     assertTrue(result);
   }
+
+  @Test
+  void userRegister() {
+    String userAccount = "yupi111";
+    String userPassword = "12345666666";
+    String checkPassword = "12345666666";
+    long result = userService.userRegister(userAccount, userPassword, checkPassword);
+    log.info("register result: " + result);
+  }
 }

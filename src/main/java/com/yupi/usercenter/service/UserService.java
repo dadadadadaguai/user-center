@@ -2,6 +2,7 @@ package com.yupi.usercenter.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yupi.usercenter.model.domain.User;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -14,4 +15,8 @@ public interface UserService extends IService<User> {
   long userRegister(String userAccount, String userPassword, String checkPassword);
 
   User userLogin(String userAccount, String userPassword, HttpServletRequest request);
+
+  List<User> searchUsers(String username, HttpServletRequest request);
+
+  boolean removeUser(long id, HttpServletRequest request);
 }

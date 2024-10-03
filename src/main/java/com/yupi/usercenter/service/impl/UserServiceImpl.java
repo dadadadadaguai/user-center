@@ -4,9 +4,13 @@ import static com.sun.javafx.font.FontResource.SALT;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.yupi.usercenter.constant.UserConstant;
 import com.yupi.usercenter.mapper.UserMapper;
 import com.yupi.usercenter.model.domain.User;
 import com.yupi.usercenter.service.UserService;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -103,6 +107,38 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     dbUser = getSafetyUser(dbUser);
     request.getSession().setAttribute(USER_INFO_STATE, dbUser);
     return dbUser;
+  }
+
+  @Override
+  public List<User> searchUsers(String username, HttpServletRequest request) {
+    Object userobj = request.getSession().getAttribute(USER_INFO_STATE);
+    User loginUser = (User) userobj;
+    if (!Objects.equals(loginUser.getRole(), UserConstant.ADMINROLE)
+        || StringUtils.isNotBlank(username)) {
+      return Collections.emptyList();
+    }
+    QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+    queryWrapper.like("username", username); // 模糊查询
+    queryWrapper.eq("userStatus", 0);
+    List<User> userList = this.list(queryWrapper);
+    userList.forEach(user -> user.setUserPassword(null));
+    return userList;
+  }
+
+  /**
+   * 删除用户
+   *
+   * @param id
+   * @return
+   */
+  @Override
+  public boolean removeUser(long id, HttpServletRequest request) {
+    Object userobj = request.getSession().getAttribute(USER_INFO_STATE);
+    User loginUser = (User) userobj;
+    if (!Objects.equals(loginUser.getRole(), UserConstant.ADMINROLE)) {
+      return false;
+    }
+    return this.removeById(id);
   }
 
   private User getSafetyUser(User dbUser) {

@@ -4,13 +4,10 @@ import com.yupi.usercenter.model.domain.User;
 import com.yupi.usercenter.model.request.UserLoginRequest;
 import com.yupi.usercenter.model.request.UserRegisterRequest;
 import com.yupi.usercenter.service.UserService;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 用户接口
@@ -44,13 +41,29 @@ public class UserController {
 
   /**
    * 用户登录
+   *
    * @param userLogin
    * @param request
    * @return
    */
   @PostMapping("/login")
-  public User userLogin(
-          @RequestBody UserLoginRequest userLogin, HttpServletRequest request) {
+  public User userLogin(@RequestBody UserLoginRequest userLogin, HttpServletRequest request) {
     return userService.userLogin(userLogin.getUserAccount(), userLogin.getUserPassword(), request);
+  }
+
+  /**
+   * 用户查询
+   *
+   * @param username
+   * @return
+   */
+  @GetMapping("/search")
+  public List<User> searchUsers(String username, HttpServletRequest request) {
+    return userService.searchUsers(username, request);
+  }
+
+  @PostMapping("/delete")
+  public boolean deleteUser(@RequestBody long id, HttpServletRequest request) {
+    return userService.removeUser(id, request);
   }
 }

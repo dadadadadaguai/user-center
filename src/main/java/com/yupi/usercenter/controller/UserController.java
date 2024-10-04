@@ -30,7 +30,7 @@ public class UserController {
    * @param userRegisterRequest
    * @return
    */
-  @RequestMapping("/register")
+  @GetMapping("/register")
   public long userRegister(@RequestBody @Validated UserRegisterRequest userRegisterRequest) {
 
     return userService.userRegister(

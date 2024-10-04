@@ -113,7 +113,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
   public List<User> searchUsers(String username, HttpServletRequest request) {
     Object userobj = request.getSession().getAttribute(USER_INFO_STATE);
     User loginUser = (User) userobj;
-    if (!Objects.equals(loginUser.getRole(), UserConstant.ADMINROLE)
+    if (!Objects.equals(loginUser.getUserRole(), UserConstant.ADMINROLE)
         || StringUtils.isNotBlank(username)) {
       return Collections.emptyList();
     }
@@ -135,7 +135,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
   public boolean removeUser(long id, HttpServletRequest request) {
     Object userobj = request.getSession().getAttribute(USER_INFO_STATE);
     User loginUser = (User) userobj;
-    if (!Objects.equals(loginUser.getRole(), UserConstant.ADMINROLE)) {
+    if (!Objects.equals(loginUser.getUserRole(), UserConstant.ADMINROLE)) {
       return false;
     }
     return this.removeById(id);

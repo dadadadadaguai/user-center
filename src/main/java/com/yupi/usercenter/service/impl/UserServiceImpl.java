@@ -11,6 +11,7 @@ import com.yupi.usercenter.service.UserService;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -121,8 +122,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     queryWrapper.like("username", username); // 模糊查询
     queryWrapper.eq("userStatus", 0);
     List<User> userList = this.list(queryWrapper);
-    userList.forEach(user -> user.setUserPassword(null));
-    return userList;
+    return userList.stream().map(this::getSafetyUser).collect(Collectors.toList());
   }
 
   /**

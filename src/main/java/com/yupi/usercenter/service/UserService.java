@@ -12,7 +12,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface UserService extends IService<User> {
 
-  long userRegister(String userAccount, String userPassword, String checkPassword);
+  long userRegister(
+      String userAccount, String userPassword, String checkPassword, String plantCode);
 
   User userLogin(String userAccount, String userPassword, HttpServletRequest request);
 

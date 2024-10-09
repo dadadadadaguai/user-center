@@ -55,6 +55,9 @@ public class User implements Serializable {
   /** 角色(0用户，1管理员) */
   private Integer userRole;
 
+  /** 编号 (最多4位编号) */
+  private String plantCode;
+
   @TableField(exist = false)
   private static final long serialVersionUID = 1L;
 }

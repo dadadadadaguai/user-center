@@ -35,19 +35,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
    * @return
    */
   @Override
-  public long userRegister(String userAccount, String userPassword, String checkPassword) {
+  public long userRegister(
+      String userAccount, String userPassword, String checkPassword, String plantCode) {
     // 校验
-    if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
+    if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, plantCode)) {
       return -1;
     }
-    int len = userAccount.length();
-    if (len < 4) {
+    if (userAccount.length() < 4) {
       return -1;
     }
     if (userPassword.length() < 8 || checkPassword.length() < 8) {
       return -1;
     }
     if (!checkPassword.equals(checkPassword)) {
+      return -1;
+    }
+    if (plantCode.length() > 5) {
       return -1;
     }
     // 校验账号是否含有不合法字符
@@ -63,8 +66,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     if (this.count(DbUser) > 0) {
       return -1;
     }
+    // 查询星球编号
+    queryWrapper = new QueryWrapper<>();
+    QueryWrapper<User> queryPlantCode = queryWrapper.eq("plantCode", plantCode);
+    if (this.count(queryPlantCode) > 0) {
+      return -1;
+    }
+
     // 插入数据
-    User user = User.builder().userAccount(userAccount).userPassword(encryptPassword).build();
+    User user =
+        User.builder()
+            .userAccount(userAccount)
+            .userPassword(encryptPassword)
+            .plantCode(plantCode)
+            .build();
     boolean saveResult = this.save(user);
     if (!saveResult) {
       return -1;
@@ -145,7 +160,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
   public User getCurrentUser(HttpServletRequest request) {
     Object user = request.getSession().getAttribute(USER_INFO_STATE);
     User currentUser = (User) user;
-    if (currentUser==null){
+    if (currentUser == null) {
       return null;
     }
     User DbUser = this.getById(currentUser.getId());
@@ -155,6 +170,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
   /**
    * 用户注销
+   *
    * @param request
    * @return
    */
@@ -165,7 +181,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
   }
 
   private User getSafetyUser(User dbUser) {
-    if (dbUser==null){
+    if (dbUser == null) {
       return null;
     }
     User safeUser = new User();

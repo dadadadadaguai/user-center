@@ -36,7 +36,8 @@ public class UserController {
     return userService.userRegister(
         userRegisterRequest.getUserAccount(),
         userRegisterRequest.getUserPassword(),
-        userRegisterRequest.getCheckPassword());
+        userRegisterRequest.getCheckPassword(),
+        userRegisterRequest.getPlantCode());
   }
 
   /**
@@ -69,6 +70,7 @@ public class UserController {
 
   /**
    * 获取用户登录态信息
+   *
    * @param request
    * @return
    */
@@ -79,11 +81,12 @@ public class UserController {
 
   /**
    * 用户注销
+   *
    * @param request
    * @return
    */
   @PostMapping("/logout")
   public Integer logout(HttpServletRequest request) {
-   return userService.userLogout(request);
+    return userService.userLogout(request);
   }
 }

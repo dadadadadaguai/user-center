@@ -33,10 +33,11 @@ class UserServiceTest {
 
   @Test
   void userRegister() {
-    String userAccount = "yupi111";
-    String userPassword = "12345666666";
-    String checkPassword = "12345666666";
-    long result = userService.userRegister(userAccount, userPassword, checkPassword);
+    String userAccount = "yupi112";
+    String userPassword = "12345666665";
+    String checkPassword = "12345666665";
+    String plantCode = "1";
+    long result = userService.userRegister(userAccount, userPassword, checkPassword, plantCode);
     log.info("register result: " + result);
   }
 }

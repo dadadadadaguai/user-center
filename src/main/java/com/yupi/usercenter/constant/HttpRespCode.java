@@ -7,6 +7,7 @@ import lombok.ToString;
 public enum HttpRespCode {
   CONTINUE("100", "等待后续请求"),
   SUCCESS("200", "请求成功"),
+  ERROR("400", "请求错误"),
   CREATED("201", "创建成功"),
   ACCEPTED("202", "请求已接收，等待处理"),
   NO_CONTENT("204", "请求成功"),

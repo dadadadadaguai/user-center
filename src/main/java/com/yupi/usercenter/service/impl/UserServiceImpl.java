@@ -4,6 +4,8 @@ import static com.sun.javafx.font.FontResource.SALT;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.yupi.usercenter.common.BusinessException;
+import com.yupi.usercenter.constant.HttpRespCode;
 import com.yupi.usercenter.constant.UserConstant;
 import com.yupi.usercenter.mapper.UserMapper;
 import com.yupi.usercenter.model.domain.User;
@@ -39,24 +41,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
       String userAccount, String userPassword, String checkPassword, String plantCode) {
     // 校验
     if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, plantCode)) {
-      return -1;
+      throw new BusinessException(HttpRespCode.BAD_REQUEST, "参数为空");
     }
     if (userAccount.length() < 4) {
-      return -1;
+      throw new BusinessException(HttpRespCode.BAD_REQUEST, "账号长度不小于4");
     }
     if (userPassword.length() < 8 || checkPassword.length() < 8) {
-      return -1;
+      throw new BusinessException(HttpRespCode.BAD_REQUEST, "密码长度不小于8");
     }
-    if (!checkPassword.equals(checkPassword)) {
-      return -1;
+    if (!userPassword.equals(checkPassword)) {
+      throw new BusinessException(HttpRespCode.BAD_REQUEST, "密码不一致");
     }
     if (plantCode.length() > 5) {
-      return -1;
+      throw new BusinessException(HttpRespCode.BAD_REQUEST, "星球编号长度不大于5");
     }
     // 校验账号是否含有不合法字符
     String validPattern = "[`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
     if (userAccount.matches(validPattern)) {
-      return -1;
+      throw new BusinessException(HttpRespCode.BAD_REQUEST, "账号含有非法字符");
     }
     // 密码加密
     String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
@@ -64,13 +66,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     QueryWrapper<User> queryWrapper = new QueryWrapper<>();
     QueryWrapper<User> DbUser = queryWrapper.eq("userAccount", userAccount);
     if (this.count(DbUser) > 0) {
-      return -1;
+      throw new BusinessException(HttpRespCode.BAD_REQUEST, "账号重复");
     }
     // 查询星球编号
     queryWrapper = new QueryWrapper<>();
     QueryWrapper<User> queryPlantCode = queryWrapper.eq("plantCode", plantCode);
     if (this.count(queryPlantCode) > 0) {
-      return -1;
+      throw new BusinessException(HttpRespCode.BAD_REQUEST, "星球编号重复");
     }
 
     // 插入数据
@@ -82,7 +84,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             .build();
     boolean saveResult = this.save(user);
     if (!saveResult) {
-      return -1;
+      throw new BusinessException(HttpRespCode.BAD_REQUEST, "注册失败");
     }
     return user.getId();
   }
@@ -100,15 +102,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
     int len = userAccount.length();
     if (len < 4) {
-      return null;
+      throw new BusinessException(HttpRespCode.BAD_REQUEST, "账号长度不小于4");
     }
     if (userPassword.length() < 8) {
-      return null;
+      throw new BusinessException(HttpRespCode.BAD_REQUEST, "密码长度不小于8");
     }
     // 校验账号是否含有不合法字符
     String validPattern = "[`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
     if (userAccount.matches(validPattern)) {
-      return null;
+      throw new BusinessException(HttpRespCode.BAD_REQUEST, "账号含有非法字符");
     }
     String Md5Password = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
     // 查询
@@ -117,7 +119,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     queryWrapper.eq("userPassword", Md5Password);
     User dbUser = this.getOne(queryWrapper);
     if (dbUser == null) {
-      return null;
+      throw new BusinessException(HttpRespCode.BAD_REQUEST, "账号或密码错误");
     }
     // 脱敏
     dbUser = getSafetyUser(dbUser);
@@ -161,7 +163,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     Object user = request.getSession().getAttribute(USER_INFO_STATE);
     User currentUser = (User) user;
     if (currentUser == null) {
-      return null;
+      throw new BusinessException(HttpRespCode.BAD_REQUEST, "未登录");
     }
     User DbUser = this.getById(currentUser.getId());
     User safetyUser = getSafetyUser(DbUser);
@@ -182,7 +184,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
   private User getSafetyUser(User dbUser) {
     if (dbUser == null) {
-      return null;
+      throw new BusinessException(HttpRespCode.BAD_REQUEST, "用户不存在");
     }
     User safeUser = new User();
     BeanUtils.copyProperties(dbUser, safeUser);

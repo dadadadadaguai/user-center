@@ -147,7 +147,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
    * @return
    */
   @Override
-  public boolean removeUser(long id, HttpServletRequest request) {
+  public Boolean removeUser(long id, HttpServletRequest request) {
     Object userobj = request.getSession().getAttribute(USER_INFO_STATE);
     User loginUser = (User) userobj;
     if (!Objects.equals(loginUser.getUserRole(), UserConstant.ADMINROLE)) {

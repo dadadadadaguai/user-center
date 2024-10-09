@@ -1,9 +1,11 @@
 package com.yupi.usercenter.controller;
 
+import com.yupi.usercenter.common.Resp;
 import com.yupi.usercenter.model.domain.User;
 import com.yupi.usercenter.model.request.UserLoginRequest;
 import com.yupi.usercenter.model.request.UserRegisterRequest;
 import com.yupi.usercenter.service.UserService;
+import com.yupi.usercenter.util.RespUtils;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.validation.annotation.Validated;
@@ -31,13 +33,14 @@ public class UserController {
    * @return
    */
   @GetMapping("/register")
-  public long userRegister(@RequestBody @Validated UserRegisterRequest userRegisterRequest) {
-
-    return userService.userRegister(
-        userRegisterRequest.getUserAccount(),
-        userRegisterRequest.getUserPassword(),
-        userRegisterRequest.getCheckPassword(),
-        userRegisterRequest.getPlantCode());
+  public Resp<Long> userRegister(@RequestBody @Validated UserRegisterRequest userRegisterRequest) {
+    long result =
+        userService.userRegister(
+            userRegisterRequest.getUserAccount(),
+            userRegisterRequest.getUserPassword(),
+            userRegisterRequest.getCheckPassword(),
+            userRegisterRequest.getPlantCode());
+    return RespUtils.success(result);
   }
 
   /**
@@ -48,8 +51,9 @@ public class UserController {
    * @return
    */
   @PostMapping("/login")
-  public User userLogin(@RequestBody UserLoginRequest userLogin, HttpServletRequest request) {
-    return userService.userLogin(userLogin.getUserAccount(), userLogin.getUserPassword(), request);
+  public Resp<User> userLogin(@RequestBody UserLoginRequest userLogin, HttpServletRequest request) {
+    return RespUtils.success(
+        userService.userLogin(userLogin.getUserAccount(), userLogin.getUserPassword(), request));
   }
 
   /**
@@ -59,13 +63,13 @@ public class UserController {
    * @return
    */
   @GetMapping("/search")
-  public List<User> searchUsers(String username, HttpServletRequest request) {
-    return userService.searchUsers(username, request);
+  public Resp<List<User>> searchUsers(String username, HttpServletRequest request) {
+    return RespUtils.success(userService.searchUsers(username, request));
   }
 
   @PostMapping("/delete")
-  public boolean deleteUser(@RequestBody long id, HttpServletRequest request) {
-    return userService.removeUser(id, request);
+  public Resp<Boolean> deleteUser(@RequestBody long id, HttpServletRequest request) {
+    return RespUtils.success(userService.removeUser(id, request));
   }
 
   /**
@@ -75,8 +79,8 @@ public class UserController {
    * @return
    */
   @GetMapping("/current")
-  public User getCurrentUser(HttpServletRequest request) {
-    return userService.getCurrentUser(request);
+  public Resp<User> getCurrentUser(HttpServletRequest request) {
+    return RespUtils.success(userService.getCurrentUser(request));
   }
 
   /**
@@ -86,7 +90,7 @@ public class UserController {
    * @return
    */
   @PostMapping("/logout")
-  public Integer logout(HttpServletRequest request) {
-    return userService.userLogout(request);
+  public Resp<Integer> logout(HttpServletRequest request) {
+    return RespUtils.success(userService.userLogout(request));
   }
 }

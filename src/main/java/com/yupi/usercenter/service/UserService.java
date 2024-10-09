@@ -19,7 +19,7 @@ public interface UserService extends IService<User> {
 
   List<User> searchUsers(String username, HttpServletRequest request);
 
-  boolean removeUser(long id, HttpServletRequest request);
+  Boolean removeUser(long id, HttpServletRequest request);
 
   User getCurrentUser(HttpServletRequest request);
 

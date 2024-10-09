@@ -66,4 +66,24 @@ public class UserController {
   public boolean deleteUser(@RequestBody long id, HttpServletRequest request) {
     return userService.removeUser(id, request);
   }
+
+  /**
+   * 获取用户登录态信息
+   * @param request
+   * @return
+   */
+  @GetMapping("/current")
+  public User getCurrentUser(HttpServletRequest request) {
+    return userService.getCurrentUser(request);
+  }
+
+  /**
+   * 用户注销
+   * @param request
+   * @return
+   */
+  @PostMapping("/logout")
+  public Integer logout(HttpServletRequest request) {
+   return userService.userLogout(request);
+  }
 }

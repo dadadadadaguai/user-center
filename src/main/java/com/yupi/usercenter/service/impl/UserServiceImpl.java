@@ -141,7 +141,33 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     return this.removeById(id);
   }
 
+  @Override
+  public User getCurrentUser(HttpServletRequest request) {
+    Object user = request.getSession().getAttribute(USER_INFO_STATE);
+    User currentUser = (User) user;
+    if (currentUser==null){
+      return null;
+    }
+    User DbUser = this.getById(currentUser.getId());
+    User safetyUser = getSafetyUser(DbUser);
+    return safetyUser;
+  }
+
+  /**
+   * 用户注销
+   * @param request
+   * @return
+   */
+  @Override
+  public Integer userLogout(HttpServletRequest request) {
+    request.getSession().removeAttribute(USER_INFO_STATE);
+    return 1;
+  }
+
   private User getSafetyUser(User dbUser) {
+    if (dbUser==null){
+      return null;
+    }
     User safeUser = new User();
     BeanUtils.copyProperties(dbUser, safeUser);
     safeUser.setUserStatus(null);

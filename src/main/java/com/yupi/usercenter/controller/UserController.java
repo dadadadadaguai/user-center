@@ -8,7 +8,6 @@ import com.yupi.usercenter.service.UserService;
 import com.yupi.usercenter.util.RespUtils;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**

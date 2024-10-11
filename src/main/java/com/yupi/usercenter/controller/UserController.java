@@ -33,7 +33,7 @@ public class UserController {
    * @return
    */
   @GetMapping("/register")
-  public Resp<Long> userRegister(@RequestBody @Validated UserRegisterRequest userRegisterRequest) {
+  public Resp<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
     long result =
         userService.userRegister(
             userRegisterRequest.getUserAccount(),

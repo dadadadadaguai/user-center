@@ -1,6 +1,5 @@
 package com.yupi.usercenter.service.impl;
 
-import static com.sun.javafx.font.FontResource.SALT;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -19,6 +18,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+
+import static com.yupi.usercenter.constant.UserConstant.SALT;
 
 /**
  * @author dadaguai

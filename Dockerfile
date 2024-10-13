@@ -1,10 +1,12 @@
-FROM openjdk:8-jdk-alpine
+FROM maven:3.5-jdk-8-alpine as builder
 
 WORKDIR /app
-
-COPY ./user-center-backend-0.0.1-SNAPSHOT.jar ./app/application.jar
+COPY pom.xml .
+COPY src ./src
 
 EXPOSE 8080
 
-CMD ["java","-jar","./app/user-center-0.0.1-SNAPSHOT.jar","--spring.profiles.active=prod"]
+RUN mvn package -DskipTests
+
+CMD ["java","-jar","./app/user-center-0.0.1-SNAPSHOT.jar"]
 
